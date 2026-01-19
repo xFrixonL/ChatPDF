@@ -1,0 +1,44 @@
+ARCHIVO DE ANÁLISIS TÉCNICO: TAXONOMÍA DE SOFTWARE MALICIOSO (MALWARE)
+INTRODUCCIÓN A LAS AMENAZAS INFORMÁTICAS
+El término "virus informático" se utiliza a menudo de manera genérica, pero técnicamente es solo una categoría dentro del "Malware" (Malicious Software). El malware es cualquier código diseñado para infiltrarse, dañar, o realizar acciones no autorizadas en un sistema informático. A medida que la infraestructura digital ha evolucionado, también lo han hecho los métodos de propagación y los objetivos de estos programas. En este documento analizaremos las categorías más críticas, desde los virus clásicos hasta las amenazas modernas de extorsión.
+
+1. VIRUS INFORMÁTICOS (EL ORIGEN)
+Un virus es un programa que se adjunta a un archivo legítimo (como un ejecutable .exe o un documento de Word) y requiere la intervención humana para propagarse. Cuando el usuario abre el archivo infectado, el código del virus se ejecuta y comienza a infectar otros archivos en el sistema.
+
+Mecanismo: Inserción de código en vectores de host.
+
+Variante Polimórfica: Son virus que cambian su propia firma de código cada vez que se replican para evitar ser detectados por firmas de antivirus tradicionales.
+
+2. GUSANOS (WORMS): PROPAGACIÓN AUTÓNOMA
+A diferencia de los virus, los gusanos no necesitan un archivo anfitrión ni intervención humana. Se propagan aprovechando vulnerabilidades de red para saltar de una computadora a otra de forma automática.
+
+Impacto: Suelen causar colapsos en el ancho de banda de las redes empresariales debido a su capacidad de replicación exponencial.
+
+Ejemplo Histórico: El gusano Morris o el famoso "I Love You" que colapsó servidores de correo en todo el mundo en el año 2000.
+
+3. RANSOMWARE: EL SECUESTRO DE DATOS
+El Ransomware es actualmente la amenaza más lucrativa y peligrosa para las empresas. Su objetivo es cifrar (encriptar) los archivos del usuario mediante algoritmos de grado militar (como AES-256), volviéndolos inaccesibles.
+
+La Extorsión: El atacante deja una "nota de rescate" exigiendo un pago en criptomonedas (usualmente Bitcoin o Monero) a cambio de la clave de descifrado.
+
+Doble Extorsión: Los grupos de ransomware modernos no solo cifran los datos, sino que también los roban antes de bloquearlos, amenazando con publicarlos en la "Dark Web" si no se paga el rescate.
+
+Variantes Famosas: WannaCry, que afectó a hospitales y telecomunicaciones en 2017, y LockBit.
+
+4. TROYANOS (TROJAN HORSE)
+Nombrados así por la leyenda griega, estos programas se presentan como software legítimo y útil (un juego, un optimizador de sistema, un crack de software) pero esconden una carga útil maliciosa.
+
+RAT (Remote Access Trojan): Un tipo de troyano que permite a un atacante tomar el control total de la cámara, el micrófono y los archivos de la víctima de forma remota sin que esta se dé cuenta.
+
+5. SPYWARE Y ADWARE: LA INVASIÓN DE LA PRIVACIDAD
+El Spyware está diseñado para recopilar información sobre las actividades de un usuario sin su consentimiento. Puede registrar pulsaciones de teclas (Keyloggers) para robar contraseñas bancarias o historial de navegación.
+
+Adware: Aunque a veces solo se considera molesto por mostrar publicidad invasiva, muchas versiones recolectan datos de comportamiento para venderlos a terceros, rozando la frontera del espionaje.
+
+6. ROOTKITS Y BOOTKITS: LAS AMENAZAS INVISIBLES
+Estas son quizás las formas más difíciles de detectar. Un Rootkit se instala en las capas más profundas del sistema operativo (el Kernel), lo que le permite ocultar su presencia incluso ante el Administrador de Tareas o los antivirus comunes.
+
+Bootkits: Van un paso más allá e infectan el Master Boot Record (MBR) o el firmware UEFI, ejecutándose incluso antes de que el sistema operativo se cargue.
+
+7. MALWARE SIN ARCHIVOS (FILELESS MALWARE)
+Esta es una técnica moderna donde el malware no escribe nada en el disco duro, sino que reside exclusivamente en la memoria RAM del equipo. Utiliza herramientas legítimas del sistema (como PowerShell o Windows Management Instrumentation) para ejecutar comandos maliciosos. Al no haber archivos ".exe" que escanear, los antivirus tradicionales suelen fallar en su detección.
