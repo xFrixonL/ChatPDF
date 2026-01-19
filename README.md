@@ -168,10 +168,10 @@ http://localhost:8501
 
 ## 📘 Cómo Usar la Aplicación
 
-1. **Sube un PDF** usando el botón de carga
-2. **Procesa el documento** haciendo clic en "📥 Procesar PDF"
+1. **Sube un documento** usando el botón de carga
+2. **Procesa el documento** haciendo clic en "Drag and drop file here"
 3. **Espera** mientras el sistema:
-   - Extrae el texto del PDF
+   - Extrae el texto del documento
    - Divide el texto en fragmentos (chunks)
    - Genera embeddings vectoriales
    - Almacena los datos en ChromaDB
