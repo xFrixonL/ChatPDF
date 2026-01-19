@@ -1,10 +1,10 @@
-# 📄 Chat PDF con ChromaDB + Gemini + Streamlit
+# 📄 Chat Multidocumento con ChromaDB + Gemini + Streamlit
 
 ## 📖 Introducción
 
-**Chat PDF** es una aplicación web interactiva que te permite "conversar" con tus documentos PDF. Sube cualquier PDF, haz preguntas en lenguaje natural y obtén respuestas precisas basadas en el contenido del documento. 
+**Chat Multidocumento** es una aplicación web interactiva que te permite "conversar" con tus archivos de diversos formatos, incluyendo **PDF, DOCX, TXT, HTML, CSV y XLSX**. Sube tus documentos, haz preguntas en lenguaje natural y obtén respuestas precisas basadas en el contenido extraído. 
 
-La aplicación utiliza técnicas avanzadas de **Retrieval-Augmented Generation (RAG)** para proporcionar respuestas contextuales y precisas, eliminando las "alucinaciones" típicas de los modelos de lenguaje al forzarlos a responder únicamente con información presente en el documento.
+La aplicación utiliza técnicas avanzadas de **Retrieval-Augmented Generation (RAG)** para proporcionar respuestas contextuales y precisas, eliminando las "alucinaciones" típicas de los modelos de lenguaje al forzarlos a responder únicamente con información presente en el archivo cargado.
 
 ---
 
@@ -49,7 +49,7 @@ chatpdf/
 ├── app.py                  # Aplicación principal de Streamlit
 ├── requirements.txt        # Dependencias del proyecto
 ├── .env                    # Variables de entorno (API Keys)
-├── pdfs/                   # Carpeta para documentos de prueba
+├── formats/                # Carpeta para documentos de prueba
 └── README.md               # Este archivo
 ```
 
@@ -133,6 +133,9 @@ pip install -r requirements.txt
 - `sentence-transformers` → Generación de embeddings locales
 - `google-generativeai` → Cliente de Gemini
 - `python-dotenv` → Gestión de variables de entorno
+- `python-docx` → Procesamiento y extracción de texto de archivos Word (.docx).
+- `pandas` & `openpyxl` → Manipulación de datos y lectura de archivos Excel y CSV.
+- `beautifulsoup4` → Limpieza y extracción de contenido de archivos HTML.
 
 ---
 
@@ -182,7 +185,7 @@ http://localhost:8501
 
 ```mermaid
 graph LR
-    A[PDF] --> B[Extracción de Texto]
+    A[Documento] --> B[Extracción de Texto]
     B --> C[División en Chunks]
     C --> D[Generación de Embeddings]
     D --> E[ChromaDB]
@@ -193,7 +196,11 @@ graph LR
     I --> J[Respuesta Final]
 ```
 
-1. **Extracción**: PyPDF extrae texto página por página
+1. **Extracción Multiformato**: El sistema detecta automáticamente el tipo de archivo y extrae el texto usando:
+   - **PyPDF** para archivos PDF.
+   - **python-docx** para Word.
+   - **Pandas** para Excel y CSV (con detección automática de separadores).
+   - **BeautifulSoup** para HTML.
 2. **Chunking**: Texto dividido en fragmentos de 500 caracteres con solapamiento de 100
 3. **Embeddings**: Modelo `all-MiniLM-L6-v2` convierte texto a vectores numéricos
 4. **Almacenamiento**: ChromaDB indexa los vectores para búsqueda semántica
@@ -202,12 +209,12 @@ graph LR
 
 ---
 
-## 🔄 Detección de Cambios de PDF
+## 🔄 Detección de Cambios de Archivos
 
 La aplicación incluye un sistema inteligente de detección de cambios que evita el reprocesamiento innecesario de documentos:
 
 ### Hash SHA-256
-Cada vez que subes un PDF, la aplicación genera un **hash SHA-256** único del archivo usando la biblioteca `hashlib` de Python. Este hash actúa como una "huella digital" del documento.
+Cada vez que subes un archivo (PDF, DOCX, CSV, XLSX, TXT o HTML), la aplicación genera un hash SHA-256 único del archivo usando la biblioteca hashlib de Python. Este hash actúa como una "huella digital" del documento.
 
 **Cómo funciona:**
 ```python
@@ -216,16 +223,16 @@ def hash_pdf(file) -> str:
 ```
 
 ### Reseteo Automático de Estado
-Si subes un PDF diferente (hash diferente), la aplicación automáticamente:
+Si subes un documento diferente (hash diferente), la aplicación automáticamente:
 - 🗑️ Limpia la colección de ChromaDB anterior
 - 🔄 Resetea el estado de procesamiento
 - 📥 Te permite procesar el nuevo documento
 
 **Beneficios:**
-- ✅ Evita procesamiento duplicado del mismo PDF
+- ✅ Evita procesamiento duplicado del mismo documento
 - ✅ Detecta instantáneamente cambios en el documento
 - ✅ Mejora la eficiencia y experiencia del usuario
-- ✅ Previene errores por mezcla de datos de diferentes PDFs
+- ✅ Previene errores por mezcla de datos de diferentes documentos
 
 ---
 
@@ -236,7 +243,7 @@ Si subes un PDF diferente (hash diferente), la aplicación automáticamente:
 En `app.py` línea 254, puedes modificar:
 
 ```python
-chunks = chunk_text(text, chunk_size=500, overlap=100)
+chunks = chunk_text(text, chunk_size=800, overlap=160)
 ```
 
 - **`chunk_size`**: Tamaño de cada fragmento (400-800 caracteres recomendado)
@@ -244,7 +251,7 @@ chunks = chunk_text(text, chunk_size=500, overlap=100)
 
 ### Cambiar el modelo de embeddings
 
-En `app.py` línea 22, puedes usar otros modelos de [sentence-transformers](https://huggingface.co/sentence-transformers):
+En `app.py` línea 26, puedes usar otros modelos de [sentence-transformers](https://huggingface.co/sentence-transformers):
 
 ```python
 EMBEDDING_MODEL = SentenceTransformer("all-MiniLM-L6-v2")
@@ -257,7 +264,7 @@ Opciones populares:
 
 ### Modificar el modelo de Gemini
 
-En `app.py` línea 220:
+En `app.py` línea 175:
 
 ```python
 model = genai.GenerativeModel("models/gemini-2.5-flash-lite")
@@ -282,9 +289,9 @@ pip install -r requirements.txt
 - Revisa que no haya espacios extra en el archivo `.env`
 - Regenera tu API Key en Google AI Studio
 
-### ❌ Error al procesar PDF
-- Asegúrate de que el PDF no esté protegido con contraseña
-- Verifica que el PDF contiene texto (no es solo imágenes escaneadas)
+### ❌ Error al procesar documento
+- Asegúrate de que el documento no esté protegido con contraseña
+- Verifica que el documento contiene texto
 
 ### ❌ La app no se abre en el navegador
 ```bash
@@ -316,10 +323,12 @@ Las contribuciones son bienvenidas.
 Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles.
 
 ---
+## Recomendaciones hechas
+
+- [ ] Soporte para diferentes formatos (.docx, .txt, .html, .xlsx, .csv)
 
 ## 🎯 Próximos Pasos Sugeridos
 
-- [ ] Soporte para diferentes formatos (.docx, .txt, .html)
 - [ ] Persistencia de la base de datos entre sesiones
 - [ ] Soporte para documentos escaneados (OCR)
 - [ ] Interfaz multiidioma
